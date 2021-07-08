@@ -70,12 +70,12 @@ template<bool condit, typename T, typename F> struct IF {};
 
 template<typename T, typename F>
 struct IF<false, T, F> {
-	using Result = F;
+    using Result = F;
 };
 
 template<typename T>
 struct IF<true, T, T> {
-	using Result = T;
+    using Result = T;
 };
 ```
 
@@ -84,7 +84,7 @@ struct IF<true, T, T> {
 ```c++
 template<int N>
 struct Fibonacci {
-	enum {value = Fibonacci<N - 1>::value + Fibonacci<N - 2>::value};
+    enum {value = Fibonacci<N - 1>::value + Fibonacci<N - 2>::value};
 };
 template<>
 struct Fibonacci<1> {
@@ -114,11 +114,78 @@ struct Fibonacci<0> {
 
   
 
-## 6. 策略模板
+## 6. 编译期容器
+
+编译期容器是一种嵌套结构的容器，比如**list** {e1, {e2, {e3, {e4, {...}}}}，所以元素与元素之间需要一个结构来衔接。
+
+```cpp
+template<typename T1,typename T2>
+struct Pair {
+    using T = T1;
+    using Next = T2;
+};
+/*
+	0 -- > {NullType}
+	1 -- > {T1, NullType}
+	2 -- > {T1, {T2, NullType}}
+	3 -- > {T1, {T2, {T3, NullType}}}
+	...
+*/
+struct NullType {};
+
+template<typename T, typename ...Tn>
+struct List : Pair<T, typename List<Tn...> {};
+
+template<typename T>
+struct List<T> : Pair<T, NullType> {};
+```
 
 
 
-## 7. 编译期容器
+## 7. 策略模板
+
+- 每个策略统行为函数名称
+- 每个策略的参数类型、个数 不同，可以根据应用场景优化参数
+
+```cpp
+class Policy1
+{
+public:
+    Policy1(){}
+    ~Policy1(){}
+    void execute {std::cout<<"policy1"<<std::endl;}
+private:
+    int x;
+};
+
+class Policy2
+{
+public:
+    Policy2(){}
+    ~Policy2(){}
+    void execute {std::cout<<"policy2"<<std::endl;}
+private:
+    int x;
+    char c;
+};
+
+class Policy3
+{
+public:
+    Policy3(){}
+    ~Policy3(){}
+    void execute {std::cout<<"policy3"<<std::endl;}
+};
+using PolicyList = List<Policy1, Policy2, Policy3>;
+
+template<int N>
+class Operate : public typename ListIndexOf<PolicyList, N>::Result
+{
+public:
+    Operate(){}
+    ~Operate(){}
+}
+```
 
 
 

@@ -12,7 +12,7 @@ namespace MetaSpirits {
     /* list init */
     template<typename Head, typename ...Tails>
     struct List {
-        using Result = Pair<Head, typename List<Tais...>::Result>;
+        using Result = Pair<Head, typename List<Tails...>::Result>;
     };
 
     template<typename Head>
@@ -97,6 +97,18 @@ namespace MetaSpirits {
         static const bool value = ListQuery<Tail, T>::value;
     };
 
+    /* size */
+#if 0
+    template<typename TPair> struct ListSize;
+
+    template<>
+    struct ListSize<NullType> {
+
+    };
+    template<typename Head, typename Tail>
+    struct ListSize<Pair<Head, Tail>, N> {
+        static const int value = ListSize<Tail>::value + 1;
+    };
     /* find */
     template<typename TPair, int N> struct ListFind;
 
@@ -105,7 +117,7 @@ namespace MetaSpirits {
         using Result = Tail;
     };
     template<typename Head, typename Tail, int N>
-    struct ListFind<Pair<Head, Tail>. T> {
+    struct ListFind<Pair<Head, Tail>, T> {
         using Result = typename ListFind<Tail, N - 1>::Result;
     };
 
@@ -120,6 +132,7 @@ namespace MetaSpirits {
     struct ListIndexOf<Pair<Head, Tail>, T> {
         static const int value = ListIndexOf<Tail, T>::value;
     };
+#endif
     /* sort */
 
     /* transform */
